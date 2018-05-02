@@ -14,7 +14,7 @@ I am constructing a phylogeny for a diverse clade of ground beetles (Coleoptera:
 
 
 
-![Alt text](C:/Users/perez/Desktop/2018 Classes/ESPM288 - Data Science/ESPM288_Final_Project_Phylogeny/Trichosternus vigorsi.png)
+![Alt text](/Users/seanperez/Desktop/Trich_Series/ESPM288_Final_Project_Phylogeny/Trichosternus vigorsi.png)
 
 *Trichosternus vigorsi* copyright copyright Udo Schmidt.
 
@@ -31,6 +31,68 @@ In order to infer the historical biogeography, I will download, clean, and aggre
 2. Reconstruct ancestral character of brooding, a behavior not known in other ground beetles (Carabidae).
 
 3. Use locality information from the Essig Museum database to map species ranges and answer hypotheses about historical biogeograph.
+
+
+
+
+#Downloading locality data for species of interest from gbif.
+
+Install the 'rgbif' package.
+```{r, echo=FALSE}
+#install.packages("rgbif")
+library('rgbif')
+library(tidyverse)
+```
+
+Find the relevant taxa.
+```{r}
+(key <- name_suggest(q='Nurus', rank = 'genus')$key[1])
+```
+
+A general overview of the data quantity contained in Gbif.
+```{r}
+res <- occ_search(taxonKey = key, limit=100)
+res
+```
+
+There are 839 records of the genus Nurus in this dataset, a reasonable amount to work with if all are imported. Setting limit to 1000 since the default is only 500.
+
+```{r}
+Nurus_gbif <- occ_search(taxonKey = key, limit = 1000)
+```
+
+Checking for all unique species names to see if any erroneous taxa were imported. 
+```{r}
+uniqueNurus <- unique(Nurus_gbif$data$species)
+uniqueNurus
+```
+
+Filtering out for just species and their respective localities.
+```{r}
+Nurus_localities <- select(Nurus_gbif$data, "species", "decimalLatitude", "decimalLongitude", "key")
+
+head(Nurus_localities)
+```
+
+Counting the number of NAs in the species column.
+```{r}
+nrow(Nurus_localities)
+sum(is.na(Nurus_localities$species))
+```
+143 out of 839 records are 'NA' for species, potentially representing species not identified to species. These will be removed from the analysis.
+```{r}
+Nurus_localities_omitted <- na.omit(Nurus_localities, cols = "species")
+```
+
+Checking for any leftover NAs and new number of rows.
+```{r}
+sum(is.na(Nurus_localities_omitted$species))
+nrow(Nurus_localities_omitted)
+```
+
+
+
+
 
 ## Adding records to NCBI 
 
