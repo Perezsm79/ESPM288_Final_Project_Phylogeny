@@ -7,6 +7,4 @@ Final Project for ESPM 288: Phylogeny of Australian Trichosternus, Historical Bi
 Sean Perez
 
 ## Project.rmd
-This contains the final project analysis in a presentable form.
-
-adding a line
+This contains the final project analysis.
